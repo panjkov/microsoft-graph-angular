@@ -11,11 +11,11 @@ It shows how you can Mircosoft Graph to login with a Microsoft account.
 
 Once you login, it reads the contacts of your Microsoft account.
 
-![image](https://user-images.githubusercontent.com/3375461/28985932-b4ef87a8-7919-11e7-8a67-31ba8d83fa24.png)
+![image](readme-images/Angular4ScreenShot.png)
 
 If you click "Write to Excel" button, it writes the contacts to an Excel file.
 
-![image](https://cloud.githubusercontent.com/assets/3375461/26473949/19163702-4163-11e7-9a41-fe7482422a23.png)
+![image](readme-images/ExcelScreenShot.png)
 
 > Note before write to Excel, you need create an file called "demo.xlsx" in root folder of your OneDrive.
 > Then create an table called "Table 1" which has two columns in the Excel like below:
