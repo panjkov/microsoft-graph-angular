@@ -10,8 +10,8 @@ import { AuthService } from '../auth/auth.service';
   template: `
     <table>
       <tr>
-        <th align="left">Name</th>
-        <th align="left">Email</th>
+        <th align="left">Subject</th>
+        <th align="left">Organizer Email</th>
       </tr>
       <tr *ngFor="let event of events">
         <td>{{event.subject}}</td>
@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.subsAddContactToExcel.unsubscribe();
     this.subsAddEventToExcel.unsubscribe();
   }
-  
+
   onAddEventToExcel() {
     this.subsAddEventToExcel = this.homeService.addEventToExcel(this.events).subscribe();
   }
