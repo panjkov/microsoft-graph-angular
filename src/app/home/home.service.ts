@@ -6,8 +6,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { extractData, handleError } from '../shared/http-helper';
 import { HttpService } from '../shared/http.service';
-import { User } from './user.model';
-import { Event } from './user.model';
+import { Event } from './event.model';
 
 @Injectable()
 export class HomeService {
@@ -20,40 +19,9 @@ export class HomeService {
     private httpService: HttpService) {
   }
 
-  getUsers(): Observable<User[]> {
-    return this.http
-      .get(`${this.url}/me/contacts?$select=displayName,emailAddresses`, this.httpService.getAuthRequestOptions())
-      .map(extractData)
-      .catch(handleError);
-  }
-
   getEvents(): Observable<Event[]> {
     return this.http
       .get(`${this.url}/me/events?$select=subject,organizer`, this.httpService.getAuthRequestOptions())
-      .map(extractData)
-      .catch(handleError);
-  }
-
-  addContactToExcel(users: User[]) {
-    const contacts = [];
-
-    users.forEach(user => {
-      contacts.push([user.displayName, user.emailAddresses[0].address]);
-    });
-
-    const contactRequestBody = {
-      index: null,
-      values: contacts
-    };
-
-    const body = JSON.stringify(contactRequestBody);
-
-    return this.http
-      .post(
-        `${this.url}/me/drive/root:/${this.file}:/workbook/tables/${this.table}/rows/add`,
-        body,
-        this.httpService.getAuthRequestOptions()
-      )
       .map(extractData)
       .catch(handleError);
   }

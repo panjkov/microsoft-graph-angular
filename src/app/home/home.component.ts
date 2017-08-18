@@ -1,8 +1,7 @@
 ﻿import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
-import { User } from './user.model';
-import { Event } from './user.model';
+import { Event } from './event.model';
 import { HomeService } from './home.service';
 import { AuthService } from '../auth/auth.service';
 
@@ -24,7 +23,6 @@ import { AuthService } from '../auth/auth.service';
   `
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  users: User[];
   events: Event[];
   subsGetUsers: Subscription;
   subsGetEvents: Subscription;
@@ -37,7 +35,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    //this.subsGetUsers = this.homeService.getUsers().subscribe(users => this.users = users);
     this.subsGetEvents = this.homeService.getEvents().subscribe(events => this.events = events);
   }
 
@@ -46,11 +43,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.subsAddContactToExcel.unsubscribe();
     this.subsAddEventToExcel.unsubscribe();
   }
-
-  onAddContactToExcel() {
-    this.subsAddContactToExcel = this.homeService.addContactToExcel(this.users).subscribe();
-  }
-
+  
   onAddEventToExcel() {
     this.subsAddEventToExcel = this.homeService.addEventToExcel(this.events).subscribe();
   }
