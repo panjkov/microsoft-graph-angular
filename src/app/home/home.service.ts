@@ -1,5 +1,8 @@
 ﻿import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/observable/fromPromise';
+import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
+import * as MicrosoftGraphClient from "@microsoft/microsoft-graph-client"
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
@@ -19,19 +22,37 @@ export class HomeService {
     private httpService: HttpService) {
   }
 
-  getEvents(): Observable<Event[]> {
-    return this.http
-      .get(`${this.url}/me/events?$select=subject,organizer`, this.httpService.getAuthRequestOptions())
-      .map(extractData)
-      .catch(handleError);
+  getClient(): MicrosoftGraphClient.Client
+  {
+    var client = MicrosoftGraphClient.Client.init({
+      authProvider: (done) => {
+          done(null, this.httpService.getAccessToken()); //first parameter takes an error if you can't get an access token
+      }
+    });
+    return client;
   }
 
-  addEventToExcel(events: Event[]) {
+  getEvents(): Observable<MicrosoftGraph.Event[]> {
+    
+    var client = this.getClient();
+    
+    return Observable.fromPromise(client
+    .api('me/events')
+    .select("subject,organizer")
+    .get()
+    .then ((res => {
+      return res.value;
+    } ) )
+    );
+
+  }
+
+  addEventToExcel(events: MicrosoftGraph.Event[]) {
     const calendarEvents = [];
 
     events.forEach(event => {
       calendarEvents.push([event.subject, event.organizer.emailAddress.address]);
-    });
+    });   
 
     const calendarEventRequestBody = {
       index: null,
@@ -41,14 +62,21 @@ export class HomeService {
 
     const body = JSON.stringify(calendarEventRequestBody);
 
-    return this.http
-      .post(
-        `${this.url}/me/drive/root:/${this.file}:/workbook/tables/${this.table}/rows/add`,
-        body,
-        this.httpService.getAuthRequestOptions()
-      )
-      .map(extractData)
-      .catch(handleError);
+    // return this.http
+    //   .post(
+    //     `${this.url}/me/drive/root:/${this.file}:/workbook/tables/${this.table}/rows/add`,
+    //     body,
+    //     this.httpService.getAuthRequestOptions()
+    //   )
+    //   .map(extractData)
+    //   .catch(handleError);
+
+    var client = this.getClient();
+    var url = `${this.url}/me/drive/root:/${this.file}:/workbook/tables/${this.table}/rows/add`
+    return Observable.fromPromise(client
+    .api(url)
+    .post(body) 
+    );
   }
 
 }

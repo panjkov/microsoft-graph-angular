@@ -2,6 +2,7 @@
 import { Subscription } from 'rxjs/Subscription';
 
 import { Event } from './event.model';
+import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
 import { HomeService } from './home.service';
 import { AuthService } from '../auth/auth.service';
 
@@ -23,7 +24,7 @@ import { AuthService } from '../auth/auth.service';
   `
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  events: Event[];
+  events: MicrosoftGraph.Event[];
   subsGetUsers: Subscription;
   subsGetEvents: Subscription;
   subsAddContactToExcel: Subscription;

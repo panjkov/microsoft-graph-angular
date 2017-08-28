@@ -10,4 +10,9 @@ export class HttpService {
 
     return { headers: authHeaders };
   }
+  getAccessToken() {
+    const msft = hello('msft').getAuthResponse();
+    const accessToken = msft.access_token;
+    return accessToken;
+  }
 }
