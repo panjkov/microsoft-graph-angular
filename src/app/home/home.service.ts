@@ -62,15 +62,6 @@ export class HomeService {
 
     const body = JSON.stringify(calendarEventRequestBody);
 
-    // return this.http
-    //   .post(
-    //     `${this.url}/me/drive/root:/${this.file}:/workbook/tables/${this.table}/rows/add`,
-    //     body,
-    //     this.httpService.getAuthRequestOptions()
-    //   )
-    //   .map(extractData)
-    //   .catch(handleError);
-
     var client = this.getClient();
     var url = `${this.url}/me/drive/root:/${this.file}:/workbook/tables/${this.table}/rows/add`
     return Observable.fromPromise(client
