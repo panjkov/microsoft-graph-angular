@@ -1,3 +1,8 @@
+/* 
+*  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. 
+*  See LICENSE in the source repository root for complete license information. 
+*/
+
 import { Component } from '@angular/core';
 
 import { AuthService } from '../auth/auth.service';

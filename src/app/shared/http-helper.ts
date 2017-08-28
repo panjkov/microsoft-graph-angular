@@ -1,3 +1,8 @@
+/* 
+*  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. 
+*  See LICENSE in the source repository root for complete license information. 
+*/
+
 import 'rxjs/add/observable/throw';
 import { Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';

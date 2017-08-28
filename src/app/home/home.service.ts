@@ -1,4 +1,9 @@
-﻿import 'rxjs/add/operator/catch';
+﻿/* 
+*  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. 
+*  See LICENSE in the source repository root for complete license information. 
+*/
+
+import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/fromPromise';
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
