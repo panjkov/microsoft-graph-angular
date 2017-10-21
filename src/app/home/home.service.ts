@@ -1,12 +1,20 @@
-﻿import 'rxjs/add/operator/catch';
+﻿/* 
+*  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. 
+*  See LICENSE in the source repository root for complete license information. 
+*/
+
+import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/observable/fromPromise';
+import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
+import * as MicrosoftGraphClient from "@microsoft/microsoft-graph-client"
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 
 import { extractData, handleError } from '../shared/http-helper';
 import { HttpService } from '../shared/http.service';
-import { User } from './user.model';
+import { Event } from './event.model';
 
 @Injectable()
 export class HomeService {
@@ -19,34 +27,52 @@ export class HomeService {
     private httpService: HttpService) {
   }
 
-  getUsers(): Observable<User[]> {
-    return this.http
-      .get(`${this.url}/me/contacts?$select=displayName,emailAddresses`, this.httpService.getAuthRequestOptions())
-      .map(extractData)
-      .catch(handleError);
+  getClient(): MicrosoftGraphClient.Client
+  {
+    var client = MicrosoftGraphClient.Client.init({
+      authProvider: (done) => {
+          done(null, this.httpService.getAccessToken()); //first parameter takes an error if you can't get an access token
+      }
+    });
+    return client;
   }
 
-  addContactToExcel(users: User[]) {
-    const contacts = [];
+  getEvents(): Observable<MicrosoftGraph.Event[]> {
+    
+    var client = this.getClient();
+    
+    return Observable.fromPromise(client
+    .api('me/events')
+    .select("subject,organizer")
+    .get()
+    .then ((res => {
+      return res.value;
+    } ) )
+    );
 
-    users.forEach(user => {
-      contacts.push([user.displayName, user.emailAddresses[0].address]);
-    });
+  }
 
-    const contact = {
+  addEventToExcel(events: MicrosoftGraph.Event[]) {
+    const calendarEvents = [];
+
+    events.forEach(event => {
+      calendarEvents.push([event.subject, event.organizer.emailAddress.address]);
+    });   
+
+    const calendarEventRequestBody = {
       index: null,
-      values: contacts
+      values: calendarEvents
     };
 
-    const body = JSON.stringify(contact);
 
-    return this.http
-      .post(
-        `${this.url}/me/drive/root:/${this.file}:/workbook/tables/${this.table}/rows/add`,
-        body,
-        this.httpService.getAuthRequestOptions()
-      )
-      .map(extractData)
-      .catch(handleError);
+    const body = JSON.stringify(calendarEventRequestBody);
+
+    var client = this.getClient();
+    var url = `${this.url}/me/drive/root:/${this.file}:/workbook/tables/${this.table}/rows/add`
+    return Observable.fromPromise(client
+    .api(url)
+    .post(body) 
+    );
   }
+
 }
